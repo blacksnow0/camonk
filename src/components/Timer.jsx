@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import React from "react";
 
-function Timer({ startTimer, nextQuestion, resetSignal }) {
+function Timer({ startTimer, nextQuestion, resetSignal, questionId }) {
   const [seconds, setSeconds] = useState(60);
 
   useEffect(() => {
-    setSeconds(60); // reset when resetSignal changes
+    setSeconds(60);
   }, [resetSignal]);
 
   useEffect(() => {
@@ -14,9 +14,13 @@ function Timer({ startTimer, nextQuestion, resetSignal }) {
     if (startTimer) {
       interval = setInterval(() => {
         setSeconds((prev) => {
-          if (prev === 55) {
+          if (prev === 50) {
             clearInterval(interval);
-            nextQuestion(); // go to next question
+            const response = {
+              questionId: questionId.questionId,
+              answers: [],
+            };
+            nextQuestion(response);
             return 60;
           }
           return prev - 1;
@@ -25,7 +29,7 @@ function Timer({ startTimer, nextQuestion, resetSignal }) {
     }
 
     return () => clearInterval(interval);
-  }, [startTimer, nextQuestion]);
+  }, [startTimer, nextQuestion, questionId]);
 
   return <div className="p-4 text-md font-semibold">Timer: {seconds}s</div>;
 }
